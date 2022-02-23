@@ -29,9 +29,9 @@ router.put("/receive", async (req, res) => {
 	try {
 		console.log(req.body);
 		const updatedProducts = [];
-		// req.body.forEach((item) =>
-		// 	updatedProducts.push(await Product.findByIdAndUpdate(item._id, { $set: req.body }, { new: true }))
-		// );
+		req.body.forEach(
+			async (item) => await Product.findByIdAndUpdate(item._id, { $set: item }, { new: true })
+		);
 		res.status(200).json(updatedProducts);
 	} catch (error) {
 		res.status(500).json(error);
