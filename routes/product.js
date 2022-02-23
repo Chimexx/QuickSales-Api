@@ -24,16 +24,33 @@ router.post("/new", async (req, res) => {
 // 	}
 // });
 
-// //Update dish
-// router.put("/:id", verifyTokenAndAdminManager, async (req, res) => {
-// 	try {
-// 		const updatedDish = await Dish.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
-// 		res.status(200).json(updatedDish);
-// 	} catch (error) {
-// 		res.status(500).json(error);
-// 	}
-// });
-
+//Receive Products
+router.put("/receive", async (req, res) => {
+	try {
+		console.log(req.body);
+		const updatedProducts = [];
+		// req.body.forEach((item) =>
+		// 	updatedProducts.push(await Product.findByIdAndUpdate(item._id, { $set: req.body }, { new: true }))
+		// );
+		res.status(200).json(updatedProducts);
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
+//Update Product
+router.put("/:id", async (req, res) => {
+	try {
+		const updatedProduct = await Product.findByIdAndUpdate(
+			req.params.id,
+			{ $set: req.body },
+			{ new: true }
+		);
+		res.status(200).json(updatedProduct);
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
+//  verifyTokenAndAdminManager,
 // //Delete dish
 // router.delete("/:id", verifyTokenAndAdminManager, async (req, res) => {
 // 	try {
