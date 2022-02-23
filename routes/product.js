@@ -44,25 +44,16 @@ router.post("/new", async (req, res) => {
 // 	}
 // });
 
-// //Get All Dishes
+//Get All Products
 
-// router.get("/", async (req, res) => {
-// 	const catQuery = req.query.category;
+router.get("/", async (req, res) => {
+	try {
+		const products = await Product.find();
 
-// 	try {
-// 		let dishes;
-
-// 		if (catQuery) {
-// 			dishes = await Dish.find({ category: { $in: [catQuery] } }).limit(10);
-// 		} else {
-// 			dishes = await Dish.find();
-// 		}
-
-// 		res.status(200).json(dishes);
-// 	} catch (error) {
-// 		res.status(500).json(error);
-// 		console.log(error);
-// 	}
-// });
+		res.status(200).json(products);
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
 
 module.exports = router;
