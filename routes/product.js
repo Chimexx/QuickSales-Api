@@ -4,7 +4,11 @@ const { verifyTokenAndAdminManagerOwner } = require("./verifyToken");
 
 //Create Product
 router.post("/new", async (req, res) => {
-	const product = new Product(req.body);
+	const product = new Product({
+		...req.body,
+		availQty: (req.body.availQty += req.body.onHandQty),
+		onHandQty: 0,
+	});
 	try {
 		const savedProduct = await product.save();
 		res.status(201).json(savedProduct);
