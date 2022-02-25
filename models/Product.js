@@ -11,6 +11,8 @@ const ProductSchema = new mongoose.Schema(
 		retailPrice: { type: Number },
 		vendor: { type: String },
 		expiryDate: { type: String },
+		onHandQty: { type: Number },
+		availQty: { type: Number },
 	},
 	{ timestamps: true }
 );

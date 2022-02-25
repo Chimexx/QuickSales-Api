@@ -27,11 +27,16 @@ router.post("/new", async (req, res) => {
 //Receive Products
 router.put("/receive", async (req, res) => {
 	try {
-		// console.log(req.body);
-
-		const updatedProducts = await Product.updateMany({ _id: {} }, { $set: req.body }, { new: true });
-
-		res.status(200).json(updatedProducts);
+		req.body.forEach(async (doc) => {
+			const data = await Product.updateMany(
+				{ _id: doc._id },
+				{ $set: { availQty: (doc.availQty += doc.onHandQty) } },
+				{
+					upsert: true,
+				}
+			);
+		});
+		res.status(200).json("updatedData");
 	} catch (error) {
 		res.status(500).json(error);
 	}
