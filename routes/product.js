@@ -4,15 +4,17 @@ const { verifyTokenAndAdminManagerOwner } = require("./verifyToken");
 
 //Create Product
 router.post("/new", async (req, res) => {
-	const product = new Product({
-		...req.body,
-		availQty: (req.body.availQty += req.body.onHandQty),
-		onHandQty: 0,
-	});
 	try {
+		const product = new Product({
+			...req.body,
+			availQty: req.body.onHandQty,
+			onHandQty: 0,
+		});
 		const savedProduct = await product.save();
 		res.status(201).json(savedProduct);
 	} catch (error) {
+		console.log(error);
+
 		res.status(500).json(error);
 	}
 });
@@ -31,16 +33,18 @@ router.post("/new", async (req, res) => {
 //Receive Products
 router.put("/receive", async (req, res) => {
 	try {
-		req.body.forEach(async (doc) => {
-			const data = await Product.updateMany(
-				{ _id: doc._id },
-				{ $set: { availQty: (doc.availQty += doc.onHandQty) } },
-				{
-					upsert: true,
-				}
-			);
-		});
-		res.status(200).json("updatedData");
+		async function runUpdate(doc) {
+			await Product.updateOne({ _id: doc._id }, { $set: { availQty: (doc.availQty += doc.onHandQty) } })
+				.exec()
+				.then(function (data) {
+					console.log(data);
+				})
+				.catch(function (err) {
+					console.log(err);
+				});
+		}
+		req.body.forEach((doc) => runUpdate(doc));
+		res.status(200).json("ok");
 	} catch (error) {
 		res.status(500).json(error);
 	}
