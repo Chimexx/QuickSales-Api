@@ -9,7 +9,7 @@ const ProductSchema = new mongoose.Schema(
 		costPrice: { type: Number, required: true },
 		wholesalePrice: { type: Number, default: 0 },
 		retailPrice: { type: Number, default: 0 },
-		vendor: { type: String },
+		vendor: { type: String, default: "system" },
 		expiryDate: { type: String },
 		onHandQty: { type: Number, default: 0 },
 		availQty: { type: Number, default: 0 },

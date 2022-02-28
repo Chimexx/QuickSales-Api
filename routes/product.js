@@ -33,18 +33,19 @@ router.post("/new", async (req, res) => {
 //Receive Products
 router.put("/receive", async (req, res) => {
 	try {
-		async function runUpdate(doc) {
-			await Product.updateOne({ _id: doc._id }, { $set: { availQty: (doc.availQty += doc.onHandQty) } })
-				.exec()
-				.then(function (data) {
-					console.log(data);
-				})
-				.catch(function (err) {
-					console.log(err);
-				});
+		async function update(docs) {
+			const operation = docs.map((doc) => ({
+				updateOne: {
+					filter: { _id: doc._id },
+					update: { $set: { availQty: (doc.availQty += doc.onHandQty) } },
+					upsert: false,
+				},
+			}));
+			const result = await Product.bulkWrite(operation);
+			return res.status(200).json(result);
 		}
-		req.body.forEach((doc) => runUpdate(doc));
-		res.status(200).json("ok");
+
+		update(req.body);
 	} catch (error) {
 		res.status(500).json(error);
 	}
@@ -76,8 +77,14 @@ router.put("/:id", async (req, res) => {
 //Get All Products
 
 router.get("/", async (req, res) => {
+	const filterQuery = req.query.filter;
 	try {
-		const products = await Product.find();
+		let products;
+		if (filterQuery) {
+			products = await Product.find({ itemName: { $in: [filterQuery] } });
+		} else {
+			products = await Product.find();
+		}
 
 		res.status(200).json(products);
 	} catch (error) {
