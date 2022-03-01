@@ -50,6 +50,26 @@ router.put("/receive", async (req, res) => {
 		res.status(500).json(error);
 	}
 });
+//Sell Products
+router.put("/sell", async (req, res) => {
+	try {
+		async function update(docs) {
+			const operation = docs.map((doc) => ({
+				updateOne: {
+					filter: { _id: doc._id },
+					update: { $set: { availQty: (doc.availQty -= doc.onHandQty) } },
+					upsert: false,
+				},
+			}));
+			const result = await Product.bulkWrite(operation);
+			return res.status(200).json(result);
+		}
+
+		update(req.body.items);
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
 //Update Product
 router.put("/:id", async (req, res) => {
 	try {
@@ -65,7 +85,7 @@ router.put("/:id", async (req, res) => {
 });
 //  verifyTokenAndAdminManager,
 //Delete product
-router.delete("/:id", verifyTokenAndAdminManager, async (req, res) => {
+router.delete("/:id", async (req, res) => {
 	try {
 		await Product.findByIdAndDelete(req.params.id);
 		res.status(200).json("Product deleted");

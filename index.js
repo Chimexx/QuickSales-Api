@@ -9,6 +9,7 @@ const dotenv = require("dotenv");
 const productRoute = require("./routes/product");
 const departmentRoute = require("./routes/department");
 const vendorRoute = require("./routes/vendor");
+const customerRoute = require("./routes/customer");
 // const authRoute = require("./routes/auth");
 // const usersRoute = require("./routes/users");
 
@@ -30,6 +31,7 @@ app.use(express.json());
 app.use("/api/products", productRoute);
 app.use("/api/departments", departmentRoute);
 app.use("/api/vendors", vendorRoute);
+app.use("/api/customers", customerRoute);
 
 app.listen(process.env.PORT || 5000, () => {
 	console.log("Server running");
