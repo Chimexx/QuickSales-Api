@@ -24,25 +24,31 @@ router.get("/find/:id", async (req, res) => {
 	}
 });
 
-// //Update dish
-// router.put("/:id", verifyTokenAndAdminManager, async (req, res) => {
-// 	try {
-// 		const updatedDish = await Dish.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
-// 		res.status(200).json(updatedDish);
-// 	} catch (error) {
-// 		res.status(500).json(error);
-// 	}
-// });
+//  verifyTokenAndAdminManager
+// //Update vendor
+router.put("/:id", async (req, res) => {
+	try {
+		const updatedVendor = await Vendor.findByIdAndUpdate(
+			req.params.id,
+			{ $set: req.body },
+			{ new: true }
+		);
+		res.status(200).json(updatedVendor);
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
 
-// //Delete dish
-// router.delete("/:id", verifyTokenAndAdminManager, async (req, res) => {
-// 	try {
-// 		await Dish.findByIdAndDelete(req.params.id);
-// 		res.status(200).json("Dish deleted");
-// 	} catch (error) {
-// 		res.status(500).json(error);
-// 	}
-// });
+// verifyTokenAndAdminManager
+// //Delete vendor
+router.delete("/:id", async (req, res) => {
+	try {
+		await Vendor.findByIdAndDelete(req.params.id);
+		res.status(200).json("Vendor deleted");
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
 
 //Get All Vendors
 router.get("/", async (req, res) => {

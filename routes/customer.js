@@ -1,60 +1,60 @@
 const router = require("express").Router();
-const Department = require("../models/Department");
+const Customer = require("../models/Customer");
 const { verifyTokenAndAdminManagerOwner } = require("./verifyToken");
 
-//Create Department
+//Create Customer
 router.post("/new", async (req, res) => {
-	const department = new Department(req.body);
+	const customer = new Customer(req.body);
 	try {
-		const savedDepartment = await department.save();
-		res.status(201).json(savedDepartment);
+		const savedCustomer = await customer.save();
+		res.status(201).json(savedCustomer);
 	} catch (error) {
 		res.status(500).json(error);
 	}
 });
 
 //  verifyTokenAndAdminManagerOwner,
-//Get Department
+//Get Customer
 router.get("/find/:id", async (req, res) => {
 	try {
-		const departments = await Department.findById(req.params.id);
-		res.status(200).json(departments);
+		const customer = await Customer.findById(req.params.id);
+		res.status(200).json(customer);
 	} catch (error) {
 		res.status(500).json(error);
 	}
 });
 
-//verifyTokenAndAdminManager
-// //Update department
+//  verifyTokenAndAdminManager
+// //Update customer
 router.put("/:id", async (req, res) => {
 	try {
-		const updatedDepartment = await Department.findByIdAndUpdate(
+		const updatedCustomer = await Customer.findByIdAndUpdate(
 			req.params.id,
 			{ $set: req.body },
 			{ new: true }
 		);
-		res.status(200).json(updatedDepartment);
+		res.status(200).json(updatedCustomer);
 	} catch (error) {
 		res.status(500).json(error);
 	}
 });
 
-//verifyTokenAndAdminManager
-// //Delete department
+// verifyTokenAndAdminManager
+// //Delete customer
 router.delete("/:id", async (req, res) => {
 	try {
-		await Department.findByIdAndDelete(req.params.id);
-		res.status(200).json("Department deleted");
+		await Customer.findByIdAndDelete(req.params.id);
+		res.status(200).json("Customer deleted");
 	} catch (error) {
 		res.status(500).json(error);
 	}
 });
 
-//Get All Departments
+//Get All Customers
 router.get("/", async (req, res) => {
 	try {
-		const departments = await Department.find();
-		res.status(200).json(departments);
+		const customers = await Customer.find();
+		res.status(200).json(customers);
 	} catch (error) {
 		res.status(500).json(error);
 		console.log(error);

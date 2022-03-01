@@ -20,15 +20,15 @@ router.post("/new", async (req, res) => {
 });
 
 //  verifyTokenAndAdminManagerOwner,
-// //Get dish
-// router.get("/find/:id", async (req, res) => {
-// 	try {
-// 		const dish = await Dish.findById(req.params.id);
-// 		res.status(200).json(dish);
-// 	} catch (error) {
-// 		res.status(500).json(error);
-// 	}
-// });
+//Get Product
+router.get("/find/:id", async (req, res) => {
+	try {
+		const product = await Product.findById(req.params.id);
+		res.status(200).json(product);
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
 
 //Receive Products
 router.put("/receive", async (req, res) => {
@@ -64,18 +64,17 @@ router.put("/:id", async (req, res) => {
 	}
 });
 //  verifyTokenAndAdminManager,
-// //Delete dish
-// router.delete("/:id", verifyTokenAndAdminManager, async (req, res) => {
-// 	try {
-// 		await Dish.findByIdAndDelete(req.params.id);
-// 		res.status(200).json("Dish deleted");
-// 	} catch (error) {
-// 		res.status(500).json(error);
-// 	}
-// });
+//Delete product
+router.delete("/:id", verifyTokenAndAdminManager, async (req, res) => {
+	try {
+		await Product.findByIdAndDelete(req.params.id);
+		res.status(200).json("Product deleted");
+	} catch (error) {
+		res.status(500).json(error);
+	}
+});
 
 //Get All Products
-
 router.get("/", async (req, res) => {
 	const filterQuery = req.query.filter;
 	try {
