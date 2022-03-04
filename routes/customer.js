@@ -28,21 +28,24 @@ router.get("/find/:id", async (req, res) => {
 //  verifyTokenAndAdminManager
 // //Update customer
 router.put("/:id", async (req, res) => {
+	const { customer, total, sale } = req.body;
+	const data = { ...customer, balance: customer?.balance + total };
+
 	try {
-		if (req.body.customer.firstName && req.body.sale === true) {
-			const updatedCustomer = await Customer.findByIdAndUpdate(req.params.id, {
-				balance: req.body.customer.balance + req.body.total,
-			});
+		if (sale && customer.firstName) {
+			const updatedCustomer = await Customer.findByIdAndUpdate(
+				req.params.id,
+				{ $set: data },
+				{ new: true }
+			);
 			res.status(200).json(updatedCustomer);
-		} else if (req.body.customer.firstName && req.body.sale !== true) {
+		} else {
 			const updatedCustomer = await Customer.findByIdAndUpdate(
 				req.params.id,
 				{ $set: req.body },
 				{ new: true }
 			);
 			res.status(200).json(updatedCustomer);
-		} else {
-			return;
 		}
 	} catch (error) {
 		res.status(500).json(error);

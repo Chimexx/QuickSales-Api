@@ -10,6 +10,7 @@ const VendorSchema = new mongoose.Schema(
 		phone: { type: Number },
 		bank: { type: String },
 		account: { type: Number },
+		balance: { type: Number, default: 0 },
 	},
 	{ timestamps: true }
 );

@@ -4,8 +4,8 @@ const { verifyTokenAndAdminManagerOwner } = require("./verifyToken");
 
 //Create Vendor
 router.post("/new", async (req, res) => {
-	const vendor = new Vendor(req.body);
 	try {
+		const vendor = new Vendor(req.body);
 		const savedVendor = await vendor.save();
 		res.status(201).json(savedVendor);
 	} catch (error) {
@@ -27,13 +27,26 @@ router.get("/find/:id", async (req, res) => {
 //  verifyTokenAndAdminManager
 // //Update vendor
 router.put("/:id", async (req, res) => {
+	const { vendor, total, buy } = req.body;
+	const data = { ...vendor, balance: vendor?.balance + total };
+
 	try {
-		const updatedVendor = await Vendor.findByIdAndUpdate(
-			req.params.id,
-			{ $set: req.body },
-			{ new: true }
-		);
-		res.status(200).json(updatedVendor);
+		if (buy && vendor.company) {
+			const updatedVendor = await Vendor.findByIdAndUpdate(
+				req.params.id,
+				{ $set: data },
+				{ new: true }
+			);
+			console.log(updatedVendor);
+			res.status(200).json(updatedVendor);
+		} else {
+			const updatedVendor = await Vendor.findByIdAndUpdate(
+				req.params.id,
+				{ $set: req.body },
+				{ new: true }
+			);
+			res.status(200).json(updatedVendor);
+		}
 	} catch (error) {
 		res.status(500).json(error);
 	}

@@ -10,6 +10,8 @@ const productRoute = require("./routes/product");
 const departmentRoute = require("./routes/department");
 const vendorRoute = require("./routes/vendor");
 const customerRoute = require("./routes/customer");
+const salesHistoryRoute = require("./routes/salesHistory");
+const purchaseHistoryRoute = require("./routes/purchaseHistory");
 // const authRoute = require("./routes/auth");
 // const usersRoute = require("./routes/users");
 
@@ -32,6 +34,8 @@ app.use("/api/products", productRoute);
 app.use("/api/departments", departmentRoute);
 app.use("/api/vendors", vendorRoute);
 app.use("/api/customers", customerRoute);
+app.use("/api/sales-historys", salesHistoryRoute);
+app.use("/api/purchase-historys", purchaseHistoryRoute);
 
 app.listen(process.env.PORT || 5000, () => {
 	console.log("Server running");
