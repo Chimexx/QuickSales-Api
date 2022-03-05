@@ -9,8 +9,15 @@ const VendorSchema = new mongoose.Schema(
 		state: { type: String },
 		phone: { type: Number },
 		bank: { type: String },
-		account: { type: Number },
+		accountNo: { type: Number },
 		balance: { type: Number, default: 0 },
+		openAccount: [
+			{
+				_id: { type: String },
+				amount: { type: Number, default: 0 },
+				closed: { type: Boolean, default: false },
+			},
+		],
 	},
 	{ timestamps: true }
 );
