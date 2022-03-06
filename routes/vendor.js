@@ -27,8 +27,9 @@ router.get("/find/:id", async (req, res) => {
 //  verifyTokenAndAdminManager
 // //Update vendor
 router.put("/:id", async (req, res) => {
-	const { vendor, total, buy } = req.body;
-	const data = { ...vendor, balance: vendor?.balance + total };
+	const { vendor, bill, buy } = req.body;
+	const openAccount = [...vendor.openAccount, bill];
+	const data = { ...vendor, balance: vendor?.balance + bill.amount, openAccount };
 
 	try {
 		if (buy && vendor.company) {
@@ -37,7 +38,6 @@ router.put("/:id", async (req, res) => {
 				{ $set: data },
 				{ new: true }
 			);
-			console.log(updatedVendor);
 			res.status(200).json(updatedVendor);
 		} else {
 			const updatedVendor = await Vendor.findByIdAndUpdate(

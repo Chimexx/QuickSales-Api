@@ -13,9 +13,10 @@ const VendorSchema = new mongoose.Schema(
 		balance: { type: Number, default: 0 },
 		openAccount: [
 			{
-				_id: { type: String },
+				items: { type: Array },
 				amount: { type: Number, default: 0 },
-				closed: { type: Boolean, default: false },
+				status: { type: String, default: "open" },
+				date: { type: String },
 			},
 		],
 	},
