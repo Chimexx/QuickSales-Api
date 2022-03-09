@@ -27,28 +27,35 @@ router.get("/find/:id", async (req, res) => {
 //  verifyTokenAndAdminManager
 // //Update vendor
 router.put("/:id", async (req, res) => {
-	const { vendor, bill, buy } = req.body;
-	const openAccount = [...vendor.openAccount, bill];
-	const data = { ...vendor, balance: vendor?.balance + bill.amount, openAccount };
+	const { vendor, entity, type, status } = req.body;
+
+	const query = { _id: req.params.id };
+	const updateBuyData = {
+		$inc: { balance: entity.totalBilled },
+		$push: { bills: entity },
+	};
+	const updatePayData = {
+		$inc: { balance: -entity.paid },
+		$push: { payments: entity },
+	};
+	const queryTotal = { bills: { $elemMatch: { _id: entity.billId } } };
+	const updateTotalPaid = {
+		$inc: { "bills.$.totalPaid": entity.paid },
+		$set: { "bills.$.status": status },
+	};
 
 	try {
-		if (buy && vendor.company) {
-			const updatedVendor = await Vendor.findByIdAndUpdate(
-				req.params.id,
-				{ $set: data },
-				{ new: true }
-			);
+		if (type === "buy" && vendor.company) {
+			const updatedVendor = await Vendor.updateOne(query, updateBuyData);
 			res.status(200).json(updatedVendor);
-		} else {
-			const updatedVendor = await Vendor.findByIdAndUpdate(
-				req.params.id,
-				{ $set: req.body },
-				{ new: true }
-			);
-			res.status(200).json(updatedVendor);
+		} else if (type === "pay") {
+			const updatedVendor = await Vendor.updateOne(query, updatePayData);
+			const totalPaid = await Vendor.updateOne(queryTotal, updateTotalPaid);
+			res.status(200).json({ updatedVendor, totalPaid });
 		}
 	} catch (error) {
 		res.status(500).json(error);
+		console.log(error);
 	}
 });
 

@@ -11,12 +11,19 @@ const VendorSchema = new mongoose.Schema(
 		bank: { type: String },
 		accountNo: { type: Number },
 		balance: { type: Number, default: 0 },
-		openAccount: [
+		bills: [
 			{
-				items: { type: Array },
-				amount: { type: Number, default: 0 },
+				totalBilled: { type: Number, default: 0 },
 				status: { type: String, default: "open" },
 				date: { type: String },
+				totalPaid: { type: Number, default: 0 },
+			},
+		],
+		payments: [
+			{
+				paid: { type: Number, default: 0 },
+				date: { type: String },
+				billId: { type: String },
 			},
 		],
 	},
