@@ -28,27 +28,36 @@ router.get("/find/:id", async (req, res) => {
 //  verifyTokenAndAdminManager
 // //Update customer
 router.put("/:id", async (req, res) => {
-	const { customer, total, sale } = req.body;
-	const data = { ...customer, balance: customer?.balance + total };
+	const { customer, entity, type, status } = req.body;
+	console.log(req.body);
+
+	const query = { _id: req.params.id };
+	const updateCreditData = {
+		$inc: { balance: entity.totalCredited },
+		$push: { credits: entity },
+	};
+	const updatePayData = {
+		$inc: { balance: -entity.paid },
+		$push: { payments: entity },
+	};
+	const queryTotal = { credits: { $elemMatch: { _id: entity.creditId } } };
+	const updateTotalPaid = {
+		$inc: { "credits.$.totalPaid": entity.paid },
+		$set: { "credits.$.status": status },
+	};
 
 	try {
-		if (sale && customer.firstName) {
-			const updatedCustomer = await Customer.findByIdAndUpdate(
-				req.params.id,
-				{ $set: data },
-				{ new: true }
-			);
+		if (type === "credit" && customer.firstName) {
+			const updatedCustomer = await Customer.updateOne(query, updateCreditData);
 			res.status(200).json(updatedCustomer);
-		} else {
-			const updatedCustomer = await Customer.findByIdAndUpdate(
-				req.params.id,
-				{ $set: req.body },
-				{ new: true }
-			);
-			res.status(200).json(updatedCustomer);
+		} else if (type === "pay") {
+			const updatedCustomer = await Customer.updateOne(query, updatePayData);
+			const totalPaid = await Customer.updateOne(queryTotal, updateTotalPaid);
+			res.status(200).json({ updatedCustomer, totalPaid });
 		}
 	} catch (error) {
 		res.status(500).json(error);
+		console.log(error);
 	}
 });
 

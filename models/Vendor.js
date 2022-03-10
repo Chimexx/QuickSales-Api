@@ -14,7 +14,7 @@ const VendorSchema = new mongoose.Schema(
 		bills: [
 			{
 				totalBilled: { type: Number, default: 0 },
-				status: { type: String, default: "open" },
+				status: { type: String, default: "Open" },
 				date: { type: String },
 				totalPaid: { type: Number, default: 0 },
 			},
