@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const { restart } = require("nodemon");
 const Vendor = require("../models/Vendor");
 const { verifyTokenAndAdminManagerOwner } = require("./verifyToken");
 
@@ -28,30 +29,33 @@ router.get("/find/:id", async (req, res) => {
 // //Update vendor
 router.put("/:id", async (req, res) => {
 	const { vendor, entity, type, status } = req.body;
-
 	const query = { _id: req.params.id };
-	const updateBuyData = {
-		$inc: { balance: entity.totalBilled },
-		$push: { bills: entity },
-	};
-	const updatePayData = {
-		$inc: { balance: -entity.paid },
-		$push: { payments: entity },
-	};
-	const queryTotal = { bills: { $elemMatch: { _id: entity.billId } } };
-	const updateTotalPaid = {
-		$inc: { "bills.$.totalPaid": entity.paid },
-		$set: { "bills.$.status": status },
-	};
 
 	try {
+		//buying inventory
 		if (type === "buy" && vendor.company) {
+			const updateBuyData = {
+				$inc: { balance: entity.totalBilled },
+				$push: { bills: entity },
+			};
+
 			const updatedVendor = await Vendor.updateOne(query, updateBuyData);
 			res.status(200).json(updatedVendor);
+			//bill payment
 		} else if (type === "pay") {
+			const queryTotal = { bills: { $elemMatch: { _id: entity.billId } } };
+			const updateTotalPaid = {
+				$inc: { "bills.$.totalPaid": entity.paid },
+				$set: { "bills.$.status": status },
+			};
+			const updatePayData = { $inc: { balance: -entity.paid }, $push: { payments: entity } };
 			const updatedVendor = await Vendor.updateOne(query, updatePayData);
 			const totalPaid = await Vendor.updateOne(queryTotal, updateTotalPaid);
 			res.status(200).json({ updatedVendor, totalPaid });
+		} else {
+			//vendor update
+			const updatedVendor = await Vendor.findByIdAndUpdate(query, { $set: vendor }, { new: true });
+			res.status(200).json(updatedVendor);
 		}
 	} catch (error) {
 		res.status(500).json(error);
